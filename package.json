@@ -1,0 +1,24 @@
+{
+  "name": "nosql-social-network-api",
+  "version": "1.0.0",
+  "description": "build an API for a social network web application where users can share their thoughts, react to friends’ thoughts, and create a friend list. You’ll use Express.js for routing, a MongoDB database, and the Mongoose ODM",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pmgirardi/NoSQL-Social-Network-API.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pmgirardi/NoSQL-Social-Network-API/issues"
+  },
+  "homepage": "https://github.com/pmgirardi/NoSQL-Social-Network-API#readme",
+  "dependencies": {
+    "dayjs": "^1.11.7",
+    "express": "^4.18.2",
+    "mongoose": "^6.10.5"
+  }
+}
