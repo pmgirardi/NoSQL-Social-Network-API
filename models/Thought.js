@@ -38,10 +38,10 @@ const thoughtSchema = new Schema(
 thoughtSchema.virtual('reactionCount')
   // Getter
   .get(function () {
-    return this.tags.length;
+    return `reactions: ${this.reactions.length}`;
   });
 
 // Initialize our Application model
-const Thought = model('Thought', thoughtSchema);
+const Thought = model('thought', thoughtSchema);
 
 module.exports = Thought;
