@@ -34,70 +34,65 @@ module.exports = {
   },
 
 // PUT to update a user by its `_id`
-updateUser(req, res) {
-    User.findOneAndUpdate(
-      { _id: req.params.userId },
-      { $set: req.body },
-      { runValidators: true, new: true },
-    )
-      .then(dbUserData => {
-        if (!dbUserData) {
-          res.status(404).json({ message: 'No user with this id!' });
-        }
-        res.json(dbUserData);
-      })
-      .catch(err => {
-        res.status(500).json(err);
-      });
-  },
-
+updateUser({params, body}, res) {
+  User.findOneAndUpdate({ _id: params.userId }, body, { runValidators: true, new: true })
+  .then((dbUserData) => {
+    if(!dbUserData) {
+      res.status(404).json({ message: "No user found with this id" });
+      return;
+    }
+    res.json (dbUserData);
+  })
+  .catch(err => res.status(500).json(err));  
+},
 
 // Delete to remove user by its_id
 
-deleteUser(req, res) {
-    User.findOneAndDelete({ _id: req.params.userId })
-      .then((dbUserData) =>
-        !dbUserData
-          ? res.status(404).json({ message: 'No user with that ID' })
-          : Thought.deleteMany({ _id: { $in: dbUserData.thoughts } }),
-      )
-      .then(() => res.json({ message: 'User and thoughts deleted!' }))
-      .catch((err) => res.status(500).json(err));
+deleteUser({params}, res) {
+  User.findOneAndDelete({ _id: params.userId })
+    .then(dbUserData => {
+      if(!dbUserData) {
+        res.status(404).json({ message: 'No such user exists' });
+        return;
+      }
+    }
+    )
   },
 
 // `POST` to add a new friend to a user's friend list
 
+addFriend({params}, res) {
 
-addFriend(req, res) {
-    User.findOneAndUpdate(
-      { _id: req.params.userId },
-      { $addToSet: { friends: req.params.friendId } },
-      { new: true },
-    )
-      .then(dbUserData => {
-        if (!dbUserData) {
-        return res.status(404).json({ message: 'No friend found with that ID:' });
-        }
-      res.json(dbUserData);
-    })
-      .catch((err) => res.status(500).json(err));
-  },
+  User.findOneAndUpdate(
+    { _id: params.userId },
+    { $push: { friends: params.friendId }},
+    { new: true, runValidators: true })
+  .then(dbUserData => {
+    if(!dbUserData) {
+      res.status(404).json({ message: "No user found with this ID" })
+      return;
+    }
+    res.json(dbUserData);
+  })
+  .catch(err => res.status(500).json(err));
+},
 
 // `DELETE` to remove a friend from a user's friend list
-  deleteFriend (req, res) {
+  deleteFriend ({ params}, res) {
     User.findOneAndUpdate(
-      { _id: req.params.userId },
-      { $pull: { friend: { friendId: req.params.friendId } } },
-      { new: true },
-    )
-      .then (dbUserData =>
-        !dbUserData
-          ? res.status(404).json({ message: 'No user found with that ID :(' })
-          : res.json(dbUserData),
-      )
-      .catch((err) => res.status(500).json(err));
-  },
+      { _id: params.userId },
+      { $pull: { friends: params.friendId } },
+      { new: true, runValidators: true  })
+      .then(dbUserData => {
+        if(!dbUserData) {
+          res.status(404).json({ message: "No user found with this Id" });
+        return;
+      }
+      res.json(dbUserData);
+    })
+      .catch(err => res.status(500).json(err))
+    },
+};
 
   // **BONUS**: Remove a user's associated thoughts when deleted.
-};
 
